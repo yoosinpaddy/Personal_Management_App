@@ -65,7 +65,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     /*Delete friend*/
-    public Integer deleteContact(Integer id) {
+    public Integer deleteFriend(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("friends",
                 "id = ? ",
@@ -92,7 +92,25 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             array_list.add(f);
             res.moveToNext();
         }
+        res.close();
         return array_list;
     }
 
+    public Friend getFriendById(int friend_id) {
+        Friend f = new Friend();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from friends where id = " + friend_id + " limit 1", null);
+        res.moveToFirst();
+        while (!res.isAfterLast()) {
+            f.setId(res.getInt(res.getColumnIndex("id")));
+            f.setFname(res.getString(res.getColumnIndex("fname")));
+            f.setLname(res.getString(res.getColumnIndex("lname")));
+            f.setGender(res.getString(res.getColumnIndex("gender")));
+            f.setAge(res.getString(res.getColumnIndex("age")));
+            f.setAddress(res.getString(res.getColumnIndex("address")));
+            res.moveToNext();
+        }
+        res.close();
+        return f;
+    }
 }

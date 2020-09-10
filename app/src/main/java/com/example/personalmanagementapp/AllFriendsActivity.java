@@ -82,7 +82,7 @@ public class AllFriendsActivity extends AppCompatActivity {
                 } else {
                     Friend friend = mAdapter.getItem(pos);
                     Intent intent = new Intent(AllFriendsActivity.this, FriendDetailActivity.class);
-                    intent.putExtra("friend", friend);
+                    intent.putExtra("friend_id", friend.getId());
                     startActivity(intent);
                 }
             }
@@ -103,6 +103,32 @@ public class AllFriendsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        friendArrayList.clear();
+        friendArrayList.addAll(dbHelper.getAllFriends());
+
+        if (friendArrayList.size() == 0) {
+            tvNoFriends.setVisibility(View.VISIBLE);
+        } else {
+            tvNoFriends.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        friendArrayList.clear();
+        friendArrayList.addAll(dbHelper.getAllFriends());
+
+        if (friendArrayList.size() == 0) {
+            tvNoFriends.setVisibility(View.VISIBLE);
+        } else {
+            tvNoFriends.setVisibility(View.GONE);
+        }
     }
 
     private void enableActionMode(int position) {
@@ -162,7 +188,7 @@ public class AllFriendsActivity extends AppCompatActivity {
         mAdapter.notifyDataSetChanged();
         Log.e(TAG, "deleteFriends: Attempting to delete " + friendsToDelete.size() + " items");
         for (Friend f : friendsToDelete) {
-            if (dbHelper.deleteContact(f.getId()) > 0) {
+            if (dbHelper.deleteFriend(f.getId()) > 0) {
                 Log.e(TAG, "deleteFriends: Deleted: " + f);
             } else {
                 Log.e(TAG, "deleteFriends: Failed to delete: " + f);
