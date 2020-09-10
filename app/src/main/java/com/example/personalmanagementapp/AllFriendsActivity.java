@@ -1,9 +1,12 @@
 package com.example.personalmanagementapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +14,8 @@ import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +29,10 @@ public class AllFriendsActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private SQLiteHelper dbHelper;
     private ArrayList<Friend> friendArrayList = new ArrayList<>();
+    private ArrayList<Friend> friendsToDelete = new ArrayList<>();
+    private static final String TAG = "AllFriendsActivity";
+    private TextView tvNoFriends;
+    private FloatingActionButton fabAddFriend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +48,7 @@ public class AllFriendsActivity extends AppCompatActivity {
 
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("All My Friends");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -50,7 +59,16 @@ public class AllFriendsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
+        tvNoFriends = findViewById(R.id.tvNoFriends);
+        fabAddFriend = findViewById(R.id.fabAddFriend);
+
         friendArrayList.addAll(dbHelper.getAllFriends());
+
+        if (friendArrayList.size() == 0) {
+            tvNoFriends.setVisibility(View.VISIBLE);
+        } else {
+            tvNoFriends.setVisibility(View.GONE);
+        }
 
         //set data and list adapter
         mAdapter = new AdapterListFriend(this, friendArrayList);
@@ -59,21 +77,31 @@ public class AllFriendsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, Friend obj, int pos) {
                 if (mAdapter.getSelectedItemCount() > 0) {
+                    friendsToDelete.add(obj);
                     enableActionMode(pos);
                 } else {
-                    // read the inbox which removes bold from the row
                     Friend friend = mAdapter.getItem(pos);
-                    //TODO intent
+                    Intent intent = new Intent(AllFriendsActivity.this, FriendDetailActivity.class);
+                    intent.putExtra("friend", friend);
+                    startActivity(intent);
                 }
             }
 
             @Override
             public void onItemLongClick(View view, Friend obj, int pos) {
+                friendsToDelete.add(obj);
                 enableActionMode(pos);
             }
         });
 
         actionModeCallback = new ActionModeCallback();
+
+        fabAddFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(AllFriendsActivity.this, AddFriendActivity.class));
+            }
+        });
 
     }
 
@@ -112,7 +140,7 @@ public class AllFriendsActivity extends AppCompatActivity {
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             int id = item.getItemId();
             if (id == R.id.action_delete) {
-                deleteInboxes();
+                deleteFriends();
                 mode.finish();
                 return true;
             }
@@ -126,14 +154,20 @@ public class AllFriendsActivity extends AppCompatActivity {
         }
     }
 
-    private void deleteInboxes() {
+    private void deleteFriends() {
         List<Integer> selectedItemPositions = mAdapter.getSelectedItems();
         for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
             mAdapter.removeData(selectedItemPositions.get(i));
         }
         mAdapter.notifyDataSetChanged();
-
-        //TODO delete from SQLITE
+        Log.e(TAG, "deleteFriends: Attempting to delete " + friendsToDelete.size() + " items");
+        for (Friend f : friendsToDelete) {
+            if (dbHelper.deleteContact(f.getId()) > 0) {
+                Log.e(TAG, "deleteFriends: Deleted: " + f);
+            } else {
+                Log.e(TAG, "deleteFriends: Failed to delete: " + f);
+            }
+        }
     }
 
     @Override
