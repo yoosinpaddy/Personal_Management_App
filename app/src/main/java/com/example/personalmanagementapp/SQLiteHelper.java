@@ -140,6 +140,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         while (!res.isAfterLast()) {
             Task t = new Task();
+            t.setId(res.getInt(res.getColumnIndex("id")));
             t.setName(res.getString(res.getColumnIndex("name")));
             t.setLocation(res.getString(res.getColumnIndex("location")));
             t.setStatus(res.getString(res.getColumnIndex("status")));
@@ -310,5 +311,22 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         }
         res.close();
         return f;
+    }
+
+
+
+    public Task getTaskById(int task_id) {
+        Task t = new Task();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from todos where id = " + task_id + " limit 1", null);
+        res.moveToFirst();
+        while (!res.isAfterLast()) {
+            t.setId(res.getInt(res.getColumnIndex("id")));
+            t.setName(res.getString(res.getColumnIndex("name")));
+            t.setLocation(res.getString(res.getColumnIndex("location")));
+            res.moveToNext();
+        }
+        res.close();
+        return t;
     }
 }
