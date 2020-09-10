@@ -90,8 +90,7 @@ public class AdapterListFriend extends RecyclerView.Adapter<AdapterListFriend.Vi
     }
 
     private void displayImage(ViewHolder holder, Friend friend) {
-        holder.image.setImageResource(R.drawable.shape_circle);
-
+        holder.image.setImageResource(R.drawable.ic_account_circle);
     }
 
     private void toggleCheckedIcon(ViewHolder holder, int position) {
