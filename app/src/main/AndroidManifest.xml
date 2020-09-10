@@ -9,28 +9,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EventDetailActivity"></activity>
+        <activity android:name=".EventDetailActivity" />
         <activity android:name=".AllToDOActivity" />
-        <activity android:name=".AddToDoActivity"></activity>
+        <activity android:name=".AddToDoActivity" />
         <activity android:name=".FriendDetailActivity" />
         <activity android:name=".AddFriendActivity" />
         <activity android:name=".AllFriendsActivity" />
         <activity android:name=".MainActivity">
-        <activity android:name=".TaskDetailedActvity"></activity>
-        <activity android:name=".AllToDOActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".TaskDetailedActvity" />
         <activity android:name=".AddEventActivity" />
         <activity android:name=".AllEventsActivity" />
-        <activity android:name=".AddToDoActivity"></activity>
-        <activity android:name=".FriendDetailActivity" />
-        <activity android:name=".AddFriendActivity" />
-        <activity android:name=".AllFriendsActivity" />
-        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
