@@ -140,6 +140,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         while (!res.isAfterLast()) {
             Task t = new Task();
+            t.setId(res.getInt(res.getColumnIndex("id")));
             t.setName(res.getString(res.getColumnIndex("name")));
             t.setLocation(res.getString(res.getColumnIndex("location")));
             t.setStatus(res.getString(res.getColumnIndex("status")));
@@ -155,7 +156,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
 
     /*Add new event*/
-    public boolean addEvent(String name, String date, String time,String location) {
+    public boolean addEvent(String name, String date, String time, String location) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
@@ -167,7 +168,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     /*Update events*/
-    public boolean updateEvent(int id,String name, String date, String time,String location) {
+    public boolean updateEvent(int id, String name, String date, String time, String location) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
@@ -197,9 +198,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         while (!res.isAfterLast()) {
             Event t = new Event();
+            t.setId(res.getInt(res.getColumnIndex("id")));
             t.setName(res.getString(res.getColumnIndex("name")));
-            t.setName(res.getString(res.getColumnIndex("date")));
-            t.setName(res.getString(res.getColumnIndex("time")));
+            t.setDate(res.getString(res.getColumnIndex("date")));
+            t.setTime(res.getString(res.getColumnIndex("time")));
             t.setLocation(res.getString(res.getColumnIndex("location")));
             array_list.add(t);
             res.moveToNext();
@@ -224,7 +226,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
 
-
     /*Delete photo*/
     public Integer deletephoto(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -244,6 +245,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         while (!res.isAfterLast()) {
             Photo t = new Photo();
+            t.setId(res.getInt(res.getColumnIndex("id")));
             t.setName(res.getString(res.getColumnIndex("name")));
             array_list.add(t);
             res.moveToNext();
@@ -257,7 +259,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
 
     /*assign new friend photo*/
-    public boolean addFriendPhoto(Integer friend_id,Integer photo_id,String name) {
+    public boolean addFriendPhoto(Integer friend_id, Integer photo_id, String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("friend_id", friend_id);
@@ -265,7 +267,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         db.insert("friends_photos", null, contentValues);
         return true;
     }
-
 
 
     /*Delete assigned friend photo*/
@@ -287,6 +288,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         while (!res.isAfterLast()) {
             FriendPhoto t = new FriendPhoto();
+            t.setId(res.getInt(res.getColumnIndex("id")));
             t.setFriend_id(res.getInt(res.getColumnIndex("friend_id")));
             t.setFriend_id(res.getInt(res.getColumnIndex("photo_id")));
             array_list.add(t);
@@ -294,6 +296,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         }
         return array_list;
     }
+
     public Friend getFriendById(int friend_id) {
         Friend f = new Friend();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -310,5 +313,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         }
         res.close();
         return f;
+    }
+
+    public Event getEventById(int event_id) {
+        //TODO
+        return null;
     }
 }
