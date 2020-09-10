@@ -100,23 +100,22 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
 
     /*Add new todos*/
-    public boolean addTask(String name, String location, String status) {
+    public boolean addTask(String name, String location) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
         contentValues.put("location", location);
-        contentValues.put("status", status);
+        contentValues.put("status", "incomplete");
         db.insert("todos", null, contentValues);
         return true;
     }
 
     /*Update todos*/
-    public boolean updateTask(int id, String name, String location, String status) {
+    public boolean updateTask(int id, String name, String location) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
         contentValues.put("location", location);
-        contentValues.put("status", status);
         db.update("todos", contentValues, "id = ? ", new String[]{Integer.toString(id)});
         return true;
     }
@@ -318,6 +317,14 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
 
 
+    public Boolean toggleStatusTask(int task_id, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("status", status);
+        db.update("todos", contentValues, "id = ? ", new String[]{Integer.toString(task_id)});
+        return true;
+    }
+
     public Task getTaskById(int task_id) {
         Task t = new Task();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -327,6 +334,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             t.setId(res.getInt(res.getColumnIndex("id")));
             t.setName(res.getString(res.getColumnIndex("name")));
             t.setLocation(res.getString(res.getColumnIndex("location")));
+            t.setStatus(res.getString(res.getColumnIndex("status")));
             res.moveToNext();
         }
         res.close();

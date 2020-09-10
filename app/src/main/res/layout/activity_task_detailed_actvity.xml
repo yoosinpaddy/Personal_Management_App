@@ -118,7 +118,22 @@
 
                         </LinearLayout>
 
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginLeft="@dimen/spacing_smlarge"
+                            android:layout_marginRight="@dimen/spacing_smlarge">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Mark Complete"/>
+                            <CheckBox
+                                android:id="@+id/checkTask"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
+                        </LinearLayout>
 
 
 

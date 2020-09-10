@@ -52,7 +52,7 @@ public class AllToDOActivity extends AppCompatActivity {
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("My Todo List");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -79,7 +79,7 @@ public class AllToDOActivity extends AppCompatActivity {
         } else {
             for (Task t : taskArrayList) {
 
-                if (t.getStatus() == "complete") {
+                if (t.getStatus().equals("complete")) {
                     CompleteTaskArrayList.add(t);
                 } else {
                     incompleteTaskArrayList.add(t);
