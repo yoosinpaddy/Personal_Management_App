@@ -16,6 +16,8 @@
         <activity android:name=".AddFriendActivity" />
         <activity android:name=".AllFriendsActivity" />
         <activity android:name=".MainActivity">
+        <activity android:name=".TaskDetailedActvity"></activity>
+        <activity android:name=".AllToDOActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,6 +26,11 @@
         </activity>
         <activity android:name=".AddEventActivity" />
         <activity android:name=".AllEventsActivity" />
+        <activity android:name=".AddToDoActivity"></activity>
+        <activity android:name=".FriendDetailActivity" />
+        <activity android:name=".AddFriendActivity" />
+        <activity android:name=".AllFriendsActivity" />
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

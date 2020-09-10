@@ -106,4 +106,8 @@ public static class SectionViewHolder extends RecyclerView.ViewHolder {
         notifyItemInserted(index);
     }
 
+    public Task getItem(int position) {
+        return items.get(position);
+    }
+
 }

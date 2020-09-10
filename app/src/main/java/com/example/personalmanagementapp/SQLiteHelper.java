@@ -156,7 +156,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
 
     /*Add new event*/
-    public boolean addEvent(String name, String date, String time, String location) {
+    public boolean addEvent(String name, String date, String time,String location) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
@@ -168,7 +168,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     /*Update events*/
-    public boolean updateEvent(int id, String name, String date, String time, String location) {
+    public boolean updateEvent(int id,String name, String date, String time,String location) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
@@ -226,6 +226,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
 
+
     /*Delete photo*/
     public Integer deletephoto(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -259,7 +260,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
 
     /*assign new friend photo*/
-    public boolean addFriendPhoto(Integer friend_id, Integer photo_id, String name) {
+    public boolean addFriendPhoto(Integer friend_id,Integer photo_id,String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("friend_id", friend_id);
@@ -267,6 +268,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         db.insert("friends_photos", null, contentValues);
         return true;
     }
+
 
 
     /*Delete assigned friend photo*/
@@ -296,7 +298,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         }
         return array_list;
     }
-
     public Friend getFriendById(int friend_id) {
         Friend f = new Friend();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -313,6 +314,23 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         }
         res.close();
         return f;
+    }
+
+
+
+    public Task getTaskById(int task_id) {
+        Task t = new Task();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from todos where id = " + task_id + " limit 1", null);
+        res.moveToFirst();
+        while (!res.isAfterLast()) {
+            t.setId(res.getInt(res.getColumnIndex("id")));
+            t.setName(res.getString(res.getColumnIndex("name")));
+            t.setLocation(res.getString(res.getColumnIndex("location")));
+            res.moveToNext();
+        }
+        res.close();
+        return t;
     }
 
     public Event getEventById(int event_id) {
