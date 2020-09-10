@@ -8,6 +8,15 @@ public class Task implements Serializable {
     private String name;
     private String location;
     private String status;
+    public boolean section = false;
+
+    public boolean isSection() {
+        return section;
+    }
+
+    public void setSection(boolean section) {
+        this.section = section;
+    }
 
     public int getId() {
         return id;
