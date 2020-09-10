@@ -96,6 +96,204 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         return array_list;
     }
 
+    /*Db operations for to-do module*/
+
+
+    /*Add new todos*/
+    public boolean addTask(String name, String location, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("name", name);
+        contentValues.put("location", location);
+        contentValues.put("status", status);
+        db.insert("todos", null, contentValues);
+        return true;
+    }
+
+    /*Update todos*/
+    public boolean updateTask(int id, String name, String location, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("name", name);
+        contentValues.put("location", location);
+        contentValues.put("status", status);
+        db.update("todos", contentValues, "id = ? ", new String[]{Integer.toString(id)});
+        return true;
+    }
+
+    /*Delete todos*/
+    public Integer deleteTask(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("todos",
+                "id = ? ",
+                new String[]{Integer.toString(id)});
+    }
+
+    /*Get all todos*/
+    public ArrayList<Task> getAllTodos() {
+        ArrayList<Task> array_list = new ArrayList();
+
+        //hp = new HashMap();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from todos", null);
+        res.moveToFirst();
+
+        while (!res.isAfterLast()) {
+            Task t = new Task();
+            t.setName(res.getString(res.getColumnIndex("name")));
+            t.setLocation(res.getString(res.getColumnIndex("location")));
+            t.setStatus(res.getString(res.getColumnIndex("status")));
+            array_list.add(t);
+            res.moveToNext();
+        }
+        return array_list;
+    }
+
+
+
+    /*Db operations for event module*/
+
+
+    /*Add new event*/
+    public boolean addEvent(String name, String date, String time,String location) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("name", name);
+        contentValues.put("date", date);
+        contentValues.put("time", time);
+        contentValues.put("location", location);
+        db.insert("events", null, contentValues);
+        return true;
+    }
+
+    /*Update events*/
+    public boolean updateEvent(int id,String name, String date, String time,String location) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("name", name);
+        contentValues.put("date", date);
+        contentValues.put("time", time);
+        contentValues.put("location", location);
+        db.update("events", contentValues, "id = ? ", new String[]{Integer.toString(id)});
+        return true;
+    }
+
+    /*Delete events*/
+    public Integer deleteEvent(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("events",
+                "id = ? ",
+                new String[]{Integer.toString(id)});
+    }
+
+    /*Get all events*/
+    public ArrayList<Event> getAllEvents() {
+        ArrayList<Event> array_list = new ArrayList();
+
+        //hp = new HashMap();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from events", null);
+        res.moveToFirst();
+
+        while (!res.isAfterLast()) {
+            Event t = new Event();
+            t.setName(res.getString(res.getColumnIndex("name")));
+            t.setName(res.getString(res.getColumnIndex("date")));
+            t.setName(res.getString(res.getColumnIndex("time")));
+            t.setLocation(res.getString(res.getColumnIndex("location")));
+            array_list.add(t);
+            res.moveToNext();
+        }
+        return array_list;
+    }
+
+
+
+
+
+    /*Db operations for gallery photos*/
+
+
+    /*Add new photo*/
+    public boolean addPhoto(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("name", name);
+        db.insert("photos", null, contentValues);
+        return true;
+    }
+
+
+
+    /*Delete photo*/
+    public Integer deletephoto(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("photos",
+                "id = ? ",
+                new String[]{Integer.toString(id)});
+    }
+
+    /*Get all photos*/
+    public ArrayList<Photo> getAllPhotos() {
+        ArrayList<Photo> array_list = new ArrayList();
+
+        //hp = new HashMap();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from photos", null);
+        res.moveToFirst();
+
+        while (!res.isAfterLast()) {
+            Photo t = new Photo();
+            t.setName(res.getString(res.getColumnIndex("name")));
+            array_list.add(t);
+            res.moveToNext();
+        }
+        return array_list;
+    }
+
+
+
+    /*Db operations for assigned photos for friends*/
+
+
+    /*assign new friend photo*/
+    public boolean addFriendPhoto(Integer friend_id,Integer photo_id,String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("friend_id", friend_id);
+        contentValues.put("photo_id", photo_id);
+        db.insert("friends_photos", null, contentValues);
+        return true;
+    }
+
+
+
+    /*Delete assigned friend photo*/
+    public Integer deleteFriendPhoto(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("friends_photos",
+                "id = ? ",
+                new String[]{Integer.toString(id)});
+    }
+
+    /*Get all photos for a particular friend*/
+    public ArrayList<FriendPhoto> getAllFriendPhotos(int friend_id) {
+        ArrayList<FriendPhoto> array_list = new ArrayList();
+
+        //hp = new HashMap();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from photos where friend_id = ?", null);
+        res.moveToFirst();
+
+        while (!res.isAfterLast()) {
+            FriendPhoto t = new FriendPhoto();
+            t.setFriend_id(res.getInt(res.getColumnIndex("friend_id")));
+            t.setFriend_id(res.getInt(res.getColumnIndex("photo_id")));
+            array_list.add(t);
+            res.moveToNext();
+        }
+        return array_list;
+    }
     public Friend getFriendById(int friend_id) {
         Friend f = new Friend();
         SQLiteDatabase db = this.getReadableDatabase();
