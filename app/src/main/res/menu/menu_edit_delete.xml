@@ -2,11 +2,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_delete"
+        android:id="@+id/action_delete_friend"
         android:icon="@drawable/ic_delete"
         android:orderInCategory="100"
         android:title="Delete"
         app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/action_edit"
         android:icon="@drawable/ic_edit"

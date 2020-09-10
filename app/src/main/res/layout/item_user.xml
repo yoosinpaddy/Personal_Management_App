@@ -33,8 +33,7 @@
                     android:layout_width="@dimen/spacing_xmlarge"
                     android:layout_height="@dimen/spacing_xmlarge"
                     android:src="@drawable/shape_circle"
-                    android:visibility="gone"
-                    app:tint="@color/blue_grey_600" />
+                    app:tint="@color/indigo_200" />
 
                 <ImageView
                     android:layout_width="25dp"
@@ -53,8 +52,7 @@
                     android:id="@+id/image"
                     android:layout_width="@dimen/spacing_xmlarge"
                     android:layout_height="@dimen/spacing_xmlarge"
-                    app:srcCompat="@drawable/ic_account_circle"
-                    app:tint="@color/colorPrimaryDark" />
+                    app:srcCompat="@drawable/ic_account_circle" />
 
                 <TextView
                     android:id="@+id/image_letter"

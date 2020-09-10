@@ -1,6 +1,8 @@
 package com.example.personalmanagementapp;
 
-public class Friend {
+import java.io.Serializable;
+
+public class Friend implements Serializable {
     private int id;
     private String fname, lname;
     private String gender, age, address;

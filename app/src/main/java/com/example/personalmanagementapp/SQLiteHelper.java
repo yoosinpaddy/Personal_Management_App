@@ -83,6 +83,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         while (!res.isAfterLast()) {
             Friend f = new Friend();
+            f.setId(res.getInt(res.getColumnIndex("id")));
             f.setFname(res.getString(res.getColumnIndex("fname")));
             f.setLname(res.getString(res.getColumnIndex("lname")));
             f.setGender(res.getString(res.getColumnIndex("gender")));
