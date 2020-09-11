@@ -1,31 +1,31 @@
 package com.example.personalmanagementapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
 import java.util.ArrayList;
 
-public class GalleryActivity extends AppCompatActivity {
+public class GalleryActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private View parent_view;
 
@@ -33,39 +33,33 @@ public class GalleryActivity extends AppCompatActivity {
     private AdapterGridAlbums mAdapter;
     public static final int REQUEST_CODE = 330;
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 430;
-    private ArrayList<String> imagePaths = new ArrayList<>();
     private ArrayList<Photo> photos = new ArrayList<>();
+    private ArrayList<Photo> multiplePhotos = new ArrayList<>();
     private static final String TAG = "GalleryActivity";
     private SQLiteHelper dbHelper;
+    private int selected_photo_id = -1;
+    private TextView tvNoImages;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
-        dbHelper =new SQLiteHelper(this);
+        dbHelper = new SQLiteHelper(this);
         parent_view = findViewById(android.R.id.content);
+        tvNoImages = findViewById(R.id.tvNoImages);
 
         initToolbar();
         initComponent();
 
-        /*final Uri data = FileProvider.getUriForFile(context, "myprovider", new File(file_path));
-        context.grantUriPermission(context.getPackageName(), data, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        final Intent intent = new Intent(Intent.ACTION_VIEW)
-              .setDataAndType(data, "video/*")
-              .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        context.startActivity(intent);*/
-
-        /**/
     }
 
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
-        toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.grey_60), PorterDuff.Mode.SRC_ATOP);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Albums");
+        getSupportActionBar().setTitle("My Gallery");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -74,22 +68,65 @@ public class GalleryActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setHasFixedSize(true);
 
-        //TODO: Get images from external files
-
-        photos.addAll(dbHelper.getAllPhotos());
         //set data and list adapter
         mAdapter = new AdapterGridAlbums(this, photos);
         recyclerView.setAdapter(mAdapter);
 
+        refreshData();
+
+
         // on item list clicked
         mAdapter.setOnItemClickListener(new AdapterGridAlbums.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, Photo obj, int position) {
-                Snackbar.make(parent_view, "Item " + position + " clicked", Snackbar.LENGTH_SHORT).show();
+            public void onItemClick(View view, Photo photo, int position) {
+                Log.e(TAG, "onItemClick: selected id " + photo.getId());
+                selected_photo_id = photo.getId();
+                showPopup(view);
             }
         });
 
     }
+
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu_delete, popup.getMenu());
+        popup.setOnMenuItemClickListener(this);
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                if (selected_photo_id > -1) {
+                    if (dbHelper.deletephoto(selected_photo_id) > -1) {
+                        Log.e(TAG, "onMenuItemClick: Deleted " + selected_photo_id);
+                    } else {
+                        Log.e(TAG, "onMenuItemClick: Failed to delete " + selected_photo_id);
+                    }
+                    refreshData();
+                } else {
+                    Log.e(TAG, "onMenuItemClick: invalid id");
+                }
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void refreshData() {
+        photos.clear();
+        photos.addAll(dbHelper.getAllPhotos());
+        mAdapter.notifyDataSetChanged();
+
+        if (photos.size() == 0) {
+            tvNoImages.setVisibility(View.VISIBLE);
+        } else {
+            tvNoImages.setVisibility(View.GONE);
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -125,40 +162,54 @@ public class GalleryActivity extends AppCompatActivity {
         try {
             if (resultCode == RESULT_OK) {
                 if (requestCode == REQUEST_CODE) {
-                    Uri selectedImageUri = data.getData();
-                    Log.e(TAG, "onActivityResult: selectedImageUri: " + selectedImageUri);
-                    //selectedImageUri = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID+".provider",file1);
-                    // Get the path from the Uri
-                    final String path = getPathFromURI(selectedImageUri);
-                    if (path != null) {
-                        File f = new File(path);
-                        selectedImageUri = Uri.fromFile(f);
-                        imagePaths.add(path);
-                        dbHelper.addPhoto(path);
-                        photos.clear();
-                        photos.addAll(dbHelper.getAllPhotos());
+                    if (data.getData() != null) {
+                        Uri selectedImageUri = data.getData();
+                        Log.e(TAG, "onActivityResult: selectedImageUri: " + selectedImageUri);
 
+                        // Get the path from the Uri
+                        final String path = getPathFromURI(selectedImageUri);
+
+                        if (path != null) {
+                            dbHelper.addPhoto(path);
+                            refreshData();
+                            Log.e(TAG, "onActivityResult: Image paths: " + photos);
+                        }
+                    } else {
+                        if (data.getClipData() != null) {
+                            ClipData mClipData = data.getClipData();
+                            for (int i = 0; i < mClipData.getItemCount(); i++) {
+                                ClipData.Item item = mClipData.getItemAt(i);
+                                Uri uri = item.getUri();
+                                final String path = getPathFromURI(uri);
+                                dbHelper.addPhoto(path);
+                                refreshData();
+                            }
+                        }
                     }
-                    mAdapter.updateData(photos);
-                    Log.e(TAG, "onActivityResult: Image path: " + imagePaths);
+
                 }
             }
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             Log.e("FileSelectorActivity", "File select error", e);
         }
+
     }
 
-
     public String getPathFromURI(Uri contentUri) {
-        String res = null;
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor.moveToFirst()) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            res = cursor.getString(column_index);
+        Cursor cur = null;
+        try {
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cur = getContentResolver().query(contentUri, proj, null, null, null);
+            assert cur != null;
+            int column_index = cur.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cur.moveToFirst();
+            return cur.getString(column_index);
+        } finally {
+            if (cur != null) {
+                cur.close();
+            }
         }
-        cursor.close();
-        return res;
     }
 
     private boolean checkPermissions() {
