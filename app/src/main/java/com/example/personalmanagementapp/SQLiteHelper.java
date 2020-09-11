@@ -361,19 +361,30 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     /*Get all photos*/
     public ArrayList<Photo> getAllPhotosForFriend(int friend_id) {
         ArrayList<Photo> array_list = new ArrayList();
+        ArrayList<Integer> ids = new ArrayList();
 
         //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select photo_id from friends_photos  where friend_id =" + friend_id, null);
+        Cursor res = db.rawQuery("select * from friends_photos  where friend_id =" + friend_id, null);
         res.moveToFirst();
 
         while (!res.isAfterLast()) {
-            int photo_id =  res.getInt(res.getColumnIndex("id"));
-            Cursor res2 = db.rawQuery("select *  from photos  where id =" + photo_id, null);
-            res2.moveToFirst();
+            ids.add(res.getInt(res.getColumnIndex("photo_id")));
+//            int photo_id =  res.getInt(res.getColumnIndex("photo_id"));
+
+        }
+        res.close();
+        SQLiteDatabase db2 = this.getReadableDatabase();
+        for(int i=0; i<ids.size(); i++) {
+            int photo_id = ids.get(i);
+            // Do something with the value
+        }
+        Cursor res2 = db2.rawQuery("select *  from photos  where id =" + photo_id, null);
+        res2.moveToFirst();
+        while (!res2.isAfterLast()) {
             Photo t = new Photo();
             t.setId(res2.getInt(res.getColumnIndex("id")));
-            t.setPath(res2.getString(res.getColumnIndex("path")));
+            t.setPath(res.getString(res.getColumnIndex("image_path")));
             array_list.add(t);
             res2.moveToNext();
         }

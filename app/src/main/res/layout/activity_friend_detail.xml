@@ -204,6 +204,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_centerInParent="true"
                                     android:text="No photos, click to add"
+                                    android:focusable="true"
+                                    android:clickable="true"
                                     android:visibility="gone"/>
                                 <androidx.recyclerview.widget.RecyclerView
                                     android:id="@+id/recyclerViewPhotos"

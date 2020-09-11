@@ -1,6 +1,7 @@
 package com.example.personalmanagementapp;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -79,9 +80,17 @@ public class GalleryActivity extends AppCompatActivity implements PopupMenu.OnMe
         mAdapter.setOnItemClickListener(new AdapterGridAlbums.OnItemClickListener() {
             @Override
             public void onItemClick(View view, Photo photo, int position) {
-                Log.e(TAG, "onItemClick: selected id " + photo.getId());
-                selected_photo_id = photo.getId();
-                showPopup(view);
+                if (getIntent().hasExtra("mBool")) {
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("photoId",photo.getId());
+                    setResult(Activity.RESULT_OK,returnIntent);
+                    finish();
+                } else {
+                    Log.e(TAG, "onItemClick: selected id " + photo.getId());
+                    selected_photo_id = photo.getId();
+                    showPopup(view);
+                }
+
             }
         });
 

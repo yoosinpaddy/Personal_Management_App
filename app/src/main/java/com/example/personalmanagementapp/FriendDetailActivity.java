@@ -109,7 +109,9 @@ public class FriendDetailActivity extends AppCompatActivity {
         noPhotos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(FriendDetailActivity.this,GalleryActivity.class),2);
+                Intent i = new Intent(FriendDetailActivity.this,GalleryActivity.class);
+                i.putExtra("mBool", true);
+                startActivityForResult(i,2);
             }
         });
     }
