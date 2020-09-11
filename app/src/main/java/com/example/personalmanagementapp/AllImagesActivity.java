@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.example.personalmanagementapp.util.MarginDecoration;
@@ -34,6 +35,8 @@ import com.example.personalmanagementapp.util.pictureFacer;
 import com.example.personalmanagementapp.util.pictureFolderAdapter;
 
 import java.util.ArrayList;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 /**
  *
@@ -63,28 +66,36 @@ public class AllImagesActivity extends AppCompatActivity implements itemClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_images);
 
-        if (ContextCompat.checkSelfPermission(AllImagesActivity.this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(AllImagesActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-        //____________________________________________________________________________________
+        Toast.makeText(AllImagesActivity.this,"0",Toast.LENGTH_SHORT).show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Toast.makeText(AllImagesActivity.this,"1",Toast.LENGTH_SHORT).show();
+            if (ContextCompat.checkSelfPermission(AllImagesActivity.this,
+                    READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                Toast.makeText(AllImagesActivity.this,"2",Toast.LENGTH_SHORT).show();
+                ActivityCompat.requestPermissions(AllImagesActivity.this,
+                        new String[]{READ_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+            }
+
+        }
 
         empty = findViewById(R.id.empty);
 
         folderRecycler = findViewById(R.id.folderRecycler);
         folderRecycler.addItemDecoration(new MarginDecoration(this));
         folderRecycler.hasFixedSize();
-        ArrayList<imageFolder> folds = getPicturePaths();
+//        ArrayList<imageFolder> folds = getPicturePaths();
 
-        if (folds.isEmpty()) {
+       /* if (folds.isEmpty()) {
             empty.setVisibility(View.VISIBLE);
         } else {
             RecyclerView.Adapter folderAdapter = new pictureFolderAdapter(folds, AllImagesActivity.this, this);
             folderRecycler.setAdapter(folderAdapter);
         }
-
+*/
         changeStatusBarColor();
     }
 
