@@ -45,7 +45,7 @@ public class FriendDetailActivity extends AppCompatActivity implements PopupMenu
         recyclerViewPhotos = findViewById(R.id.recyclerViewPhotos);
         noPhotos = findViewById(R.id.noPhotos);
 
-        recyclerViewPhotos.setLayoutManager(new GridLayoutManager(this, 3));
+        recyclerViewPhotos.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerViewPhotos.setHasFixedSize(true);
 
         initToolbar();
