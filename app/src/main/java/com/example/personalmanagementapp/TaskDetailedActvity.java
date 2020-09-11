@@ -88,7 +88,7 @@ public class TaskDetailedActvity extends AppCompatActivity {
             intent.putExtra("task", task);
             startActivity(intent);
             finish();
-        } else if (item.getItemId() == R.id.action_delete_friend) {
+        } else if (item.getItemId() == R.id.action_delete) {
             if (dbHelper.deleteTask(task_id) > -1) {
                 Toast.makeText(this, "Task removed", Toast.LENGTH_SHORT).show();
             } else {
