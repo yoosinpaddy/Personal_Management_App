@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
         itemGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Coming soon!", Toast.LENGTH_SHORT).show();
-                //startActivity(new Intent(MainActivity.this, AllFriendsActivity.class));
+//                Toast.makeText(MainActivity.this, "Coming soon!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, AllImagesActivity.class));
             }
         });
 
