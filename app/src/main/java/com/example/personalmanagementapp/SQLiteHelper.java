@@ -316,7 +316,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
 
-
     public Boolean toggleStatusTask(int task_id, String status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
