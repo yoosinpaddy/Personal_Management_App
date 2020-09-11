@@ -18,8 +18,6 @@ public class AdapterGridAlbums extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private ArrayList<Photo> photos = new ArrayList<>();
 
-    private OnLoadMoreListener onLoadMoreListener;
-
     private Context ctx;
     private OnItemClickListener mOnItemClickListener;
 
@@ -95,14 +93,6 @@ public class AdapterGridAlbums extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemCount() {
         return photos.size();
-    }
-
-    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
-        this.onLoadMoreListener = onLoadMoreListener;
-    }
-
-    public interface OnLoadMoreListener {
-        void onLoadMore(int current_page);
     }
 
     public void updateData(ArrayList<Photo> imageList) {

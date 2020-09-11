@@ -259,16 +259,12 @@ public class AllEventsActivity extends AppCompatActivity {
             try {
                 for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
                     mAdapter.removeData(selectedItemPositions.get(i));
-                    mAdapter.notifyDataSetChanged();
                 }
             } catch (Exception e) {
                 for (int i = selectedItemPositions2.size() - 1; i >= 0; i--) {
                     pastAdapter.removeData(selectedItemPositions2.get(i));
-                    pastAdapter.notifyDataSetChanged();
                 }
             }
-
-            checkSizes();
 
             Log.e(TAG, "deleteEvents: Attempting to delete " + eventsToDelete.size() + " items");
             for (Event f : eventsToDelete) {
@@ -278,6 +274,11 @@ public class AllEventsActivity extends AppCompatActivity {
                     Log.e(TAG, "deleteEvents: Failed to delete: " + f);
                 }
             }
+
+            mAdapter.notifyDataSetChanged();
+            pastAdapter.notifyDataSetChanged();
+            checkSizes();
+            onResume();
         }
 
         @Override
