@@ -15,7 +15,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     private static final String TAG = "SQLiteHelper";
 
     public SQLiteHelper(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, 2);
     }
 
     /*Create tables*/
@@ -30,7 +30,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 "(id integer primary key AUTOINCREMENT , name text, date text, time text, location text)"
         );
         db.execSQL("create table if not exists photos " +
-                "(id integer primary key AUTOINCREMENT , name text)"
+                "(id integer primary key AUTOINCREMENT , path text)"
         );
         db.execSQL("create table if not exists friends_photos " +
                 "(id integer primary key AUTOINCREMENT , friend_id integer REFERENCES \"+friends+\"(\"+id+\"), photo_id integer REFERENCES \"+photos+\"(\"+id+\"))"
@@ -217,10 +217,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
 
     /*Add new photo*/
-    public boolean addPhoto(String name) {
+    public boolean addPhoto(String path) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("name", name);
+        contentValues.put("path", path);
         db.insert("photos", null, contentValues);
         return true;
     }
@@ -246,7 +246,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         while (!res.isAfterLast()) {
             Photo t = new Photo();
             t.setId(res.getInt(res.getColumnIndex("id")));
-            t.setName(res.getString(res.getColumnIndex("name")));
+            t.setPath(res.getString(res.getColumnIndex("path")));
             array_list.add(t);
             res.moveToNext();
         }
