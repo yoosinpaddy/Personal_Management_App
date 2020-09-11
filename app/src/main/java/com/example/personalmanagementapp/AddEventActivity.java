@@ -3,6 +3,8 @@ package com.example.personalmanagementapp;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -10,6 +12,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -21,6 +24,9 @@ public class AddEventActivity extends AppCompatActivity {
     private String strEventName, strEventLocation, strEventDate, strEventTime;
     private Button btnSaveEvent;
     private SQLiteHelper dbHelper;
+    private boolean isUpdateIntent;
+    private int eventID = -1;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +39,20 @@ public class AddEventActivity extends AppCompatActivity {
         edtEventDate = findViewById(R.id.edtEventDate);
         edtEventTime = findViewById(R.id.edtEventTime);
         btnSaveEvent = findViewById(R.id.btnSaveEvent);
+
+        initToolbar();
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            isUpdateIntent = true;
+            getSupportActionBar().setTitle("Update Event");
+            Event toEdit = (Event) extras.getSerializable("event");
+            eventID = toEdit.getId();
+            edtEventName.setText(toEdit.getName());
+            edtEventLocation.setText(toEdit.getLocation());
+            edtEventDate.setText(toEdit.getDate());
+            edtEventTime.setText(toEdit.getTime());
+        }
 
         edtEventDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,14 +125,45 @@ public class AddEventActivity extends AppCompatActivity {
         } else if (strEventTime.isEmpty()) {
             edtEventTime.setError("Time is required");
         } else {
-            dbHelper.addEvent(strEventName, strEventDate, strEventTime, strEventLocation);
 
-            Toast.makeText(AddEventActivity.this, "Event added successfully", Toast.LENGTH_SHORT).show();
+            if (isUpdateIntent) {
+                dbHelper.updateEvent(eventID, strEventName, strEventDate, strEventTime, strEventLocation);
+                Toast.makeText(AddEventActivity.this, "Event updated successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                dbHelper.addEvent(strEventName, strEventDate, strEventTime, strEventLocation);
+                Toast.makeText(AddEventActivity.this, "Event added successfully", Toast.LENGTH_SHORT).show();
+            }
 
             edtEventName.setText("");
             edtEventLocation.setText("");
             edtEventDate.setText("");
             edtEventTime.setText("");
         }
+    }
+
+    private void initToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        setSupportActionBar(toolbar);
+        if (isUpdateIntent) {
+            getSupportActionBar().setTitle("Update Friend");
+        } else {
+            getSupportActionBar().setTitle("Add New Friend");
+        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

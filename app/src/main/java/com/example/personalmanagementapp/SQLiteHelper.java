@@ -5,12 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 
 public class SQLiteHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "personalmanagement.db";
+    private static final String TAG = "SQLiteHelper";
 
     public SQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -156,7 +158,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
 
     /*Add new event*/
-    public boolean addEvent(String name, String date, String time,String location) {
+    public boolean addEvent(String name, String date, String time, String location) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
@@ -168,7 +170,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     /*Update events*/
-    public boolean updateEvent(int id,String name, String date, String time,String location) {
+    public boolean updateEvent(int id, String name, String date, String time, String location) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
@@ -206,10 +208,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             array_list.add(t);
             res.moveToNext();
         }
+        Log.e(TAG, "getAllEvents: All events: " + array_list.size());
         return array_list;
     }
-
-
 
 
 
@@ -224,7 +225,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         db.insert("photos", null, contentValues);
         return true;
     }
-
 
 
     /*Delete photo*/
@@ -260,7 +260,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
 
     /*assign new friend photo*/
-    public boolean addFriendPhoto(Integer friend_id,Integer photo_id,String name) {
+    public boolean addFriendPhoto(Integer friend_id, Integer photo_id, String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("friend_id", friend_id);
@@ -268,7 +268,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         db.insert("friends_photos", null, contentValues);
         return true;
     }
-
 
 
     /*Delete assigned friend photo*/
@@ -298,6 +297,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         }
         return array_list;
     }
+
     public Friend getFriendById(int friend_id) {
         Friend f = new Friend();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -317,7 +317,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
 
-
     public Task getTaskById(int task_id) {
         Task t = new Task();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -334,7 +333,20 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     public Event getEventById(int event_id) {
-        //TODO
-        return null;
+        Event e = new Event();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from events where id = " + event_id + " limit 1", null);
+        res.moveToFirst();
+        while (!res.isAfterLast()) {
+            e.setId(res.getInt(res.getColumnIndex("id")));
+            e.setName(res.getString(res.getColumnIndex("name")));
+            e.setTime(res.getString(res.getColumnIndex("time")));
+            e.setDate(res.getString(res.getColumnIndex("date")));
+            e.setLocation(res.getString(res.getColumnIndex("location")));
+            res.moveToNext();
+        }
+        res.close();
+
+        return e;
     }
 }

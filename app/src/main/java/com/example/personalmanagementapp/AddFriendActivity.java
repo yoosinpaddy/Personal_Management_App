@@ -94,12 +94,13 @@ public class AddFriendActivity extends AppCompatActivity {
         } else {
             if (isUpdateIntent) {
                 dbHelper.updateFriend(friendID, fname, lname, gender, age, address);
+                Toast.makeText(this, "Friend updated", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
                 dbHelper.addFriend(fname, lname, gender, age, address);
+                Toast.makeText(this, "Friend added", Toast.LENGTH_SHORT).show();
             }
 
-            Toast.makeText(this, "Friend saved", Toast.LENGTH_SHORT).show();
             clearTexts();
         }
     }

@@ -79,7 +79,7 @@ public class FriendDetailActivity extends AppCompatActivity {
             Intent intent = new Intent(FriendDetailActivity.this, AddFriendActivity.class);
             intent.putExtra("friend", friend);
             startActivity(intent);
-        } else if (item.getItemId() == R.id.action_delete_friend) {
+        } else if (item.getItemId() == R.id.action_delete) {
             if (dbHelper.deleteFriend(friend_id) > -1) {
                 Toast.makeText(this, "Friend removed", Toast.LENGTH_SHORT).show();
             } else {
