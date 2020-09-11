@@ -50,7 +50,7 @@ public class AllFriendsActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("All My Friends");
+        getSupportActionBar().setTitle("My Friends");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -108,27 +108,13 @@ public class AllFriendsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        friendArrayList.clear();
-        friendArrayList.addAll(dbHelper.getAllFriends());
-
-        if (friendArrayList.size() == 0) {
-            tvNoFriends.setVisibility(View.VISIBLE);
-        } else {
-            tvNoFriends.setVisibility(View.GONE);
-        }
+        refreshData();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        friendArrayList.clear();
-        friendArrayList.addAll(dbHelper.getAllFriends());
-
-        if (friendArrayList.size() == 0) {
-            tvNoFriends.setVisibility(View.VISIBLE);
-        } else {
-            tvNoFriends.setVisibility(View.GONE);
-        }
+        refreshData();
     }
 
     private void enableActionMode(int position) {
@@ -210,5 +196,18 @@ public class AllFriendsActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void refreshData() {
+        friendArrayList.clear();
+        friendArrayList.addAll(dbHelper.getAllFriends());
+
+        mAdapter.notifyDataSetChanged();
+
+        if (friendArrayList.size() == 0) {
+            tvNoFriends.setVisibility(View.VISIBLE);
+        } else {
+            tvNoFriends.setVisibility(View.GONE);
+        }
     }
 }
