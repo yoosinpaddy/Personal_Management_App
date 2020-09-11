@@ -1,30 +1,25 @@
 package com.example.personalmanagementapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.MediaStore;
-
-import androidx.annotation.RequiresApi;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.personalmanagementapp.util.MarginDecoration;
 import com.example.personalmanagementapp.util.PicHolder;
@@ -36,7 +31,6 @@ import com.example.personalmanagementapp.util.pictureFolderAdapter;
 import java.util.ArrayList;
 
 /**
- *
  * <p>
  * The main Activity start and loads all folders containing images in a RecyclerView
  * this folders are gotten from the MediaStore by the Method getPicturePaths()
@@ -63,29 +57,30 @@ public class AllImagesActivity extends AppCompatActivity implements itemClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_images);
 
-        if (ContextCompat.checkSelfPermission(AllImagesActivity.this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(AllImagesActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-        //____________________________________________________________________________________
-
         empty = findViewById(R.id.empty);
 
         folderRecycler = findViewById(R.id.folderRecycler);
         folderRecycler.addItemDecoration(new MarginDecoration(this));
         folderRecycler.hasFixedSize();
-        ArrayList<imageFolder> folds = getPicturePaths();
 
-        if (folds.isEmpty()) {
-            empty.setVisibility(View.VISIBLE);
-        } else {
-            RecyclerView.Adapter folderAdapter = new pictureFolderAdapter(folds, AllImagesActivity.this, this);
-            folderRecycler.setAdapter(folderAdapter);
-        }
+        loadImages();
 
         changeStatusBarColor();
+    }
+
+
+    private void loadImages() {
+        if (checkPermissions()) {
+            ArrayList<imageFolder> folds = getPicturePaths();
+            if (folds.isEmpty()) {
+                empty.setVisibility(View.VISIBLE);
+            } else {
+                RecyclerView.Adapter folderAdapter = new pictureFolderAdapter(folds, AllImagesActivity.this, this);
+                folderRecycler.setAdapter(folderAdapter);
+            }
+        } else {
+            requestPerms();
+        }
     }
 
     /**
@@ -185,4 +180,22 @@ public class AllImagesActivity extends AppCompatActivity implements itemClickLis
 
     }
 
+    private boolean checkPermissions() {
+        return ActivityCompat.checkSelfPermission(AllImagesActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(AllImagesActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPerms() {
+        ActivityCompat.requestPermissions(AllImagesActivity.this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+            loadImages();
+        }
+    }
 }

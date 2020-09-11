@@ -34,7 +34,8 @@
         <activity android:name=".TaskDetailedActvity" />
         <activity android:name=".AddEventActivity" />
         <activity android:name=".AllEventsActivity" />
-        <activity android:name=".ImageDisplay"
+        <activity
+            android:name=".ImageDisplay"
             android:screenOrientation="portrait"></activity>
     </application>
 
