@@ -165,13 +165,6 @@
 
                         </LinearLayout>
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginTop="@dimen/spacing_large"
-                            android:layout_marginBottom="@dimen/spacing_large"
-                            android:background="@color/grey_5" />
-
 
                         <View
                             android:layout_width="match_parent"
@@ -187,12 +180,33 @@
                             android:layout_marginRight="@dimen/spacing_mlarge"
                             android:orientation="vertical">
 
-                            <TextView
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Photos"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                                android:textColor="@color/grey_90" />
+                                android:orientation="horizontal">
+
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Photos"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                    android:textColor="@color/grey_90" />
+
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1" />
+
+                                <TextView
+                                    android:id="@+id/tvAddPhoto"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="4dp"
+                                    android:text="Add Photo"
+                                    android:textColor="@color/indigo_A700" />
+
+                            </LinearLayout>
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
@@ -203,16 +217,18 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_centerInParent="true"
-                                    android:text="No photos, click to add"
-                                    android:focusable="true"
+                                    android:layout_margin="8dp"
                                     android:clickable="true"
-                                    android:visibility="gone"/>
+                                    android:focusable="true"
+                                    android:text="No photos, click to add"
+                                    android:visibility="gone" />
+
                                 <androidx.recyclerview.widget.RecyclerView
                                     android:id="@+id/recyclerViewPhotos"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     tools:itemCount="1"
-                                    tools:listitem="@layout/item_photo" />
+                                    tools:listitem="@layout/item_photo2" />
                             </RelativeLayout>
 
 

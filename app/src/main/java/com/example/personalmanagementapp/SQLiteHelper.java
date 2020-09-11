@@ -33,7 +33,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 "(id integer primary key AUTOINCREMENT , image_path text)"
         );
         db.execSQL("create table if not exists friends_photos " +
-                "(id integer primary key AUTOINCREMENT , friend_id integer REFERENCES \"+friends+\"(\"+id+\"), photo_id integer REFERENCES \"+photos+\"(\"+id+\"))"
+                "(id integer primary key AUTOINCREMENT , friend_id integer, photo_id integer)"
         );
     }
 
@@ -273,7 +273,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public Integer deleteFriendPhoto(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("friends_photos",
-                "id = ? ",
+                "photo_id = ? ",
                 new String[]{Integer.toString(id)});
     }
 
@@ -365,28 +365,25 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from friends_photos  where friend_id =" + friend_id, null);
+        Cursor res = db.rawQuery("select photo_id from friends_photos where friend_id = " + friend_id, null);
         res.moveToFirst();
-
         while (!res.isAfterLast()) {
             ids.add(res.getInt(res.getColumnIndex("photo_id")));
-//            int photo_id =  res.getInt(res.getColumnIndex("photo_id"));
-
+            res.moveToNext();
         }
         res.close();
+
         SQLiteDatabase db2 = this.getReadableDatabase();
-        for(int i=0; i<ids.size(); i++) {
-            int photo_id = ids.get(i);
-            // Do something with the value
-        }
-        Cursor res2 = db2.rawQuery("select *  from photos  where id =" + photo_id, null);
-        res2.moveToFirst();
-        while (!res2.isAfterLast()) {
-            Photo t = new Photo();
-            t.setId(res2.getInt(res.getColumnIndex("id")));
-            t.setPath(res.getString(res.getColumnIndex("image_path")));
-            array_list.add(t);
-            res2.moveToNext();
+        for (Integer i : ids) {
+            Cursor res2 = db2.rawQuery("select *  from photos  where id = " + i, null);
+            res2.moveToFirst();
+            while (!res2.isAfterLast()) {
+                Photo t = new Photo();
+                t.setId(res2.getInt(res2.getColumnIndex("id")));
+                t.setPath(res2.getString(res2.getColumnIndex("image_path")));
+                array_list.add(t);
+                res2.moveToNext();
+            }
         }
         return array_list;
     }

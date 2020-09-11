@@ -82,8 +82,8 @@ public class GalleryActivity extends AppCompatActivity implements PopupMenu.OnMe
             public void onItemClick(View view, Photo photo, int position) {
                 if (getIntent().hasExtra("mBool")) {
                     Intent returnIntent = new Intent();
-                    returnIntent.putExtra("photoId",photo.getId());
-                    setResult(Activity.RESULT_OK,returnIntent);
+                    returnIntent.putExtra("photoId", photo.getId());
+                    setResult(Activity.RESULT_OK, returnIntent);
                     finish();
                 } else {
                     Log.e(TAG, "onItemClick: selected id " + photo.getId());
